@@ -18,6 +18,7 @@
   */
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
+#include <stdbool.h>
 #include "main.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -50,9 +51,11 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MX_GPIO_Init(void);
-/* USER CODE BEGIN PFP */
 
+static void MX_GPIO_Init(void);
+
+/* USER CODE BEGIN PFP */
+void led_set(int led, bool turn_on);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -96,20 +99,29 @@ int main(void)
     /* USER CODE BEGIN WHILE */
     while (1)
     {
-        //	  Zadanie 1
-        if (HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_RESET)
-        {
-            HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
-        } else
-        {
-            HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
-        }
+//        //	  Zadanie 1
+//        if (HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_RESET)
+//        {
+//            HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+//        } else
+//        {
+//            HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+//        }
 
+//        // Dodatek 1
+//        for (int i = 0; i < LED_COUNT; i++)
+//        {
+//            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin << i, GPIO_PIN_SET);
+//            HAL_Delay(200);
+//            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin << i, GPIO_PIN_RESET);
+
+        // Dodatek 2
         for (int i = 0; i < LED_COUNT; i++)
         {
-            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin << i, GPIO_PIN_SET);
-            HAL_Delay(200);
-            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin << i, GPIO_PIN_RESET);
+            led_set(i, 1);
+            HAL_Delay(100);
+            led_set(i, 0);
+
             /* USER CODE END WHILE */
 
             /* USER CODE BEGIN 3 */
@@ -124,40 +136,40 @@ int main(void)
   */
 void SystemClock_Config(void)
 {
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+    RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+    RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
-  RCC_OscInitStruct.MSIState = RCC_MSI_ON;
-  RCC_OscInitStruct.MSICalibrationValue = 0;
-  RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_6;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_MSI;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+    /** Initializes the RCC Oscillators according to the specified parameters
+    * in the RCC_OscInitTypeDef structure.
+    */
+    RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_MSI;
+    RCC_OscInitStruct.MSIState = RCC_MSI_ON;
+    RCC_OscInitStruct.MSICalibrationValue = 0;
+    RCC_OscInitStruct.MSIClockRange = RCC_MSIRANGE_6;
+    RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+    if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    /** Initializes the CPU, AHB and APB buses clocks
+    */
+    RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
+                                  | RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
+    RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_MSI;
+    RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+    RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+    RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /** Configure the main internal regulator output voltage
-  */
-  if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
-  {
-    Error_Handler();
-  }
+    if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+    {
+        Error_Handler();
+    }
+    /** Configure the main internal regulator output voltage
+    */
+    if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
+    {
+        Error_Handler();
+    }
 }
 
 /**
@@ -167,48 +179,65 @@ void SystemClock_Config(void)
   */
 static void MX_GPIO_Init(void)
 {
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
 
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
+    /* GPIO Ports Clock Enable */
+    __HAL_RCC_GPIOC_CLK_ENABLE();
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LED6_Pin|LED7_Pin|LED8_Pin|LED9_Pin
-                          |LED10_Pin|LED1_Pin|LED2_Pin|LED3_Pin
-                          |LED4_Pin|LED5_Pin, GPIO_PIN_RESET);
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(GPIOB, LED6_Pin | LED7_Pin | LED8_Pin | LED9_Pin
+                             | LED10_Pin | LED1_Pin | LED2_Pin | LED3_Pin
+                             | LED4_Pin | LED5_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : USER_BUTTON_Pin */
-  GPIO_InitStruct.Pin = USER_BUTTON_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(USER_BUTTON_GPIO_Port, &GPIO_InitStruct);
+    /*Configure GPIO pin : USER_BUTTON_Pin */
+    GPIO_InitStruct.Pin = USER_BUTTON_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(USER_BUTTON_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LD2_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+    /*Configure GPIO pin : LD2_Pin */
+    GPIO_InitStruct.Pin = LD2_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LED6_Pin LED7_Pin LED8_Pin LED9_Pin
-                           LED10_Pin LED1_Pin LED2_Pin LED3_Pin
-                           LED4_Pin LED5_Pin */
-  GPIO_InitStruct.Pin = LED6_Pin|LED7_Pin|LED8_Pin|LED9_Pin
-                          |LED10_Pin|LED1_Pin|LED2_Pin|LED3_Pin
-                          |LED4_Pin|LED5_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+    /*Configure GPIO pins : LED6_Pin LED7_Pin LED8_Pin LED9_Pin
+                             LED10_Pin LED1_Pin LED2_Pin LED3_Pin
+                             LED4_Pin LED5_Pin */
+    GPIO_InitStruct.Pin = LED6_Pin | LED7_Pin | LED8_Pin | LED9_Pin
+                          | LED10_Pin | LED1_Pin | LED2_Pin | LED3_Pin
+                          | LED4_Pin | LED5_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
 
 /* USER CODE BEGIN 4 */
+void led_set(int led, bool turn_on)
+{
+    GPIO_PinState state;
+
+    if (turn_on)
+    {
+        state = GPIO_PIN_SET;
+    } else
+    {
+        state = GPIO_PIN_RESET;
+    }
+
+    if (led >= 0 && led < 10)
+    {
+        HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin << led, state);
+    }
+}
 
 /* USER CODE END 4 */
 
@@ -218,13 +247,13 @@ static void MX_GPIO_Init(void)
   */
 void Error_Handler(void)
 {
-  /* USER CODE BEGIN Error_Handler_Debug */
-        /* User can add his own implementation to report the HAL error return state */
-        __disable_irq();
-        while (1)
-        {
-        }
-  /* USER CODE END Error_Handler_Debug */
+    /* USER CODE BEGIN Error_Handler_Debug */
+    /* User can add his own implementation to report the HAL error return state */
+    __disable_irq();
+    while (1)
+    {
+    }
+    /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT
