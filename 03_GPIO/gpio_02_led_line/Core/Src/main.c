@@ -28,7 +28,11 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-
+typedef struct
+{
+    GPIO_TypeDef *port;
+    uint16_t pin;
+} pin_t;
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -46,6 +50,19 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
+
+static const pin_t LED[] = {
+        {LED1_GPIO_Port,  LED1_Pin},
+        {LED2_GPIO_Port,  LED2_Pin},
+        {LED3_GPIO_Port,  LED3_Pin},
+        {LED4_GPIO_Port,  LED4_Pin},
+        {LED5_GPIO_Port,  LED5_Pin},
+        {LED6_GPIO_Port,  LED6_Pin},
+        {LED7_GPIO_Port,  LED7_Pin},
+        {LED8_GPIO_Port,  LED8_Pin},
+        {LED9_GPIO_Port,  LED9_Pin},
+        {LED10_GPIO_Port, LED10_Pin},
+};
 
 /* USER CODE END PV */
 
@@ -211,40 +228,9 @@ void led_set(int led, bool turn_on)
 
     state = turn_on ? GPIO_PIN_SET : GPIO_PIN_RESET;
 
-    switch(led)
+    if (led >= 0 && led < 10)
     {
-        case 0:
-            HAL_GPIO_WritePin(LED1_GPIO_Port, LED1_Pin, state);
-            break;
-        case 1:
-            HAL_GPIO_WritePin(LED2_GPIO_Port, LED2_Pin, state);
-            break;
-        case 2:
-            HAL_GPIO_WritePin(LED3_GPIO_Port, LED3_Pin, state);
-            break;
-        case 3:
-            HAL_GPIO_WritePin(LED4_GPIO_Port, LED4_Pin, state);
-            break;
-        case 4:
-            HAL_GPIO_WritePin(LED5_GPIO_Port, LED5_Pin, state);
-            break;
-        case 5:
-            HAL_GPIO_WritePin(LED6_GPIO_Port, LED6_Pin, state);
-            break;
-        case 6:
-            HAL_GPIO_WritePin(LED7_GPIO_Port, LED7_Pin, state);
-            break;
-        case 7:
-            HAL_GPIO_WritePin(LED8_GPIO_Port, LED8_Pin, state);
-            break;
-        case 8:
-            HAL_GPIO_WritePin(LED9_GPIO_Port, LED9_Pin, state);
-            break;
-        case 9:
-            HAL_GPIO_WritePin(LED10_GPIO_Port, LED10_Pin, state);
-            break;
-        default:
-            break;
+        HAL_GPIO_WritePin(LED[led].port, LED[led].pin, state);
     }
 }
 
