@@ -73,6 +73,8 @@ static void MX_GPIO_Init(void);
 
 /* USER CODE BEGIN PFP */
 void led_set(int led, bool turn_on);
+
+bool is_button_pressed(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -109,24 +111,33 @@ int main(void)
     /* Initialize all configured peripherals */
     MX_GPIO_Init();
     /* USER CODE BEGIN 2 */
-
+    uint16_t led_index = 0;
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1)
     {
-        // Dodatek 2
-        for (int i = 0; i < LED_COUNT; i++)
+        // Dodatek 5
+        if (is_button_pressed() == true)
         {
-            led_set(i, 1);
-            HAL_Delay(100);
-            led_set(i, 0);
+            led_set(led_index, 0);
 
-            /* USER CODE END WHILE */
+            led_index++;
 
-            /* USER CODE BEGIN 3 */
+            if (led_index >= 10)
+            {
+                led_index = 0;
+            }
+
+            led_set(led_index, 1);
+            while (is_button_pressed())
+            {
+            }
         }
+        /* USER CODE END WHILE */
+
+        /* USER CODE BEGIN 3 */
         /* USER CODE END 3 */
     }
 }
@@ -231,6 +242,18 @@ void led_set(int led, bool turn_on)
     if (led >= 0 && led < 10)
     {
         HAL_GPIO_WritePin(LED[led].port, LED[led].pin, state);
+    }
+}
+
+bool is_button_pressed(void)
+{
+    if (HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_RESET)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 
