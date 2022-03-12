@@ -66,6 +66,7 @@ static const pin_t LED[] = {
 static const pin_t BUTTON[] = {
         {USER_BUTTON_GPIO_Port, USER_BUTTON_Pin},
         {USER_BUTTON2_GPIO_Port, USER_BUTTON2_Pin},
+        {RESET_BUTTON_GPIO_Port, RESET_BUTTON_Pin},
 };
 
 /* USER CODE END PV */
@@ -151,6 +152,18 @@ int main(void)
 
             led_set(led_index, true);
             while (is_button_pressed(1))
+            {
+            }
+            // opóźnienie na wypadek drgań po zwolnieniu przycisku
+            HAL_Delay(20);
+        }
+
+        if (is_button_pressed(2) == true)
+        {
+
+            led_set(led_index, false);
+
+            while (is_button_pressed(2))
             {
             }
             // opóźnienie na wypadek drgań po zwolnieniu przycisku
@@ -251,11 +264,11 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : USER_BUTTON2_Pin */
-  GPIO_InitStruct.Pin = USER_BUTTON2_Pin;
+  /*Configure GPIO pins : USER_BUTTON2_Pin RESET_BUTTON_Pin */
+  GPIO_InitStruct.Pin = USER_BUTTON2_Pin|RESET_BUTTON_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(USER_BUTTON2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 }
 
