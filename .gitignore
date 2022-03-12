@@ -5,6 +5,7 @@
 *.mxproject
 *.project
 
+workspace/
 *.d
 
 *.su
