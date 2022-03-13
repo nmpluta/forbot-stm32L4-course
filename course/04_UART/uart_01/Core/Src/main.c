@@ -110,8 +110,8 @@ int main(void)
         {
             line_append(value);
         }
-        /* USER CODE END 3 */
     }
+    /* USER CODE END 3 */
 }
 
 /**
@@ -206,9 +206,20 @@ static void MX_USART2_UART_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+    GPIO_InitTypeDef GPIO_InitStruct = {0};
 
     /* GPIO Ports Clock Enable */
     __HAL_RCC_GPIOA_CLK_ENABLE();
+
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+
+    /*Configure GPIO pin : LD2_Pin */
+    GPIO_InitStruct.Pin = LD2_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
 
 }
 
@@ -227,19 +238,34 @@ int __io_putchar(int ch)
 
 void line_append(uint8_t value)
 {
-    if (value == '\r' || value == '\n') {
+    if (value == '\r' || value == '\n')
+    {
         // odebraliśmy znak końca linii
-        if (line_length > 0) {
+        if (line_length > 0)
+        {
             // jeśli bufor nie jest pusty to dodajemy 0 na końcu linii
             line_buffer[line_length] = '\0';
             // przetwarzamy dane
-            printf("Otrzymano: %s\n", line_buffer);
+            if (strcmp(line_buffer, "on") == 0)
+            {
+                HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+            }
+            else if (strcmp(line_buffer, "off") == 0)
+            {
+                HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+            }
+            else
+            {
+                printf("Received unknown command: %s\n", line_buffer);
+            }
             // zaczynamy zbieranie danych od nowa
             line_length = 0;
         }
     }
-    else {
-        if (line_length >= LINE_MAX_LENGTH) {
+    else
+    {
+        if (line_length >= LINE_MAX_LENGTH)
+        {
             // za dużo danych, usuwamy wszystko co odebraliśmy dotychczas
             line_length = 0;
         }
