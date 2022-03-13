@@ -58,6 +58,8 @@ static void MX_USART2_UART_Init(void);
 
 /* USER CODE BEGIN PFP */
 void line_append(uint8_t value);
+
+uint8_t increment_val_and_resend(uint8_t value);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -96,6 +98,8 @@ int main(void)
     MX_USART2_UART_Init();
     /* USER CODE BEGIN 2 */
     printf("Hello world!\n");
+
+    uint8_t val_inc = 0;
     /* USER CODE END 2 */
 
     /* Infinite loop */
@@ -110,6 +114,7 @@ int main(void)
         {
             line_append(value);
         }
+        val_inc = increment_val_and_resend(val_inc);
     }
     /* USER CODE END 3 */
 }
@@ -209,10 +214,17 @@ static void MX_GPIO_Init(void)
     GPIO_InitTypeDef GPIO_InitStruct = {0};
 
     /* GPIO Ports Clock Enable */
+    __HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_GPIOA_CLK_ENABLE();
 
     /*Configure GPIO pin Output Level */
     HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+
+    /*Configure GPIO pin : USER_BUTTON_Pin */
+    GPIO_InitStruct.Pin = USER_BUTTON_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+    GPIO_InitStruct.Pull = GPIO_NOPULL;
+    HAL_GPIO_Init(USER_BUTTON_GPIO_Port, &GPIO_InitStruct);
 
     /*Configure GPIO pin : LD2_Pin */
     GPIO_InitStruct.Pin = LD2_Pin;
@@ -273,38 +285,50 @@ void line_append(uint8_t value)
         line_buffer[line_length++] = value;
     }
 }
+
+uint8_t increment_val_and_resend(uint8_t value)
+{
+    if (HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_RESET)
+    {
+        value++;
+        printf("Incremented value: %u\n", value);
+        while(HAL_GPIO_ReadPin(USER_BUTTON_GPIO_Port, USER_BUTTON_Pin) == GPIO_PIN_RESET)
+        {}
+    }
+    return value;
+}
 /* USER CODE END 4 */
 
 /**
   * @brief  This function is executed in case of error occurrence.
   * @retval None
   */
-void Error_Handler(void)
-{
-    /* USER CODE BEGIN Error_Handler_Debug */
-    /* User can add his own implementation to report the HAL error return state */
-    __disable_irq();
-    while (1)
+    void Error_Handler(void)
     {
+        /* USER CODE BEGIN Error_Handler_Debug */
+        /* User can add his own implementation to report the HAL error return state */
+        __disable_irq();
+        while (1)
+        {
+        }
+        /* USER CODE END Error_Handler_Debug */
     }
-    /* USER CODE END Error_Handler_Debug */
-}
 
 #ifdef  USE_FULL_ASSERT
-/**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
-void assert_failed(uint8_t *file, uint32_t line)
-{
-  /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-  /* USER CODE END 6 */
-}
+    /**
+      * @brief  Reports the name of the source file and the source line number
+      *         where the assert_param error has occurred.
+      * @param  file: pointer to the source file name
+      * @param  line: assert_param error line source number
+      * @retval None
+      */
+    void assert_failed(uint8_t *file, uint32_t line)
+    {
+      /* USER CODE BEGIN 6 */
+      /* User can add his own implementation to report the file name and line number,
+         ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+      /* USER CODE END 6 */
+    }
 #endif /* USE_FULL_ASSERT */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
