@@ -93,12 +93,9 @@ int main(void)
 
   /* USER CODE BEGIN 2 */
 
-    // Pulapka nr 2 buforowanie
-    printf("Hello world! 1 ");
-    printf("Hello world! 2 ");
-    printf("Hello world! 3 ");
-    // Konieczne oproznienie bufora
-    fflush(stdout);
+    // Obsluga float
+    float pi = 3.14f;
+    printf("Liczba pi to: %f\n", pi);
   /* USER CODE END 2 */
 
   /* Infinite loop */
