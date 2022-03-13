@@ -92,14 +92,13 @@ int main(void)
   MX_USART2_UART_Init();
 
   /* USER CODE BEGIN 2 */
-    const char message[] = "Hello world!\r\n";
-    HAL_UART_Transmit(&huart2, (uint8_t*)message, strlen(message), HAL_MAX_DELAY);
-    printf("Hej %s! Co u Ciebie?\n", "FORBOT");
 
-//    Pulapka nr 1
-    printf("Hello world!\n");
-    printf("Hello world!\n");
-    printf("Hello world!\n");
+    // Pulapka nr 2 buforowanie
+    printf("Hello world! 1 ");
+    printf("Hello world! 2 ");
+    printf("Hello world! 3 ");
+    // Konieczne oproznienie bufora
+    fflush(stdout);
   /* USER CODE END 2 */
 
   /* Infinite loop */
