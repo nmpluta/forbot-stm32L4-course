@@ -107,18 +107,28 @@ int main(void)
         if (is_button_pressed())
         {
             RTC_TimeTypeDef init_time = {0};
+            RTC_DateTypeDef init_date = {0};
             while (is_button_pressed())
             {
             }
             init_time.Hours = 11;
             init_time.Minutes = 20;
             init_time.Seconds = 0;
+            init_date.Year = 22;
+            init_date.Month = 3;
+            init_date.Date = 23;
+            init_date.WeekDay = RTC_WEEKDAY_WEDNESDAY;
+
             HAL_RTC_SetTime(&hrtc, &init_time, RTC_FORMAT_BIN);
+            HAL_RTC_SetDate(&hrtc, &init_date, RTC_FORMAT_BIN);
         }
 
         HAL_RTC_GetTime(&hrtc, &time, RTC_FORMAT_BIN);
         HAL_RTC_GetDate(&hrtc, &date, RTC_FORMAT_BIN);
 
+
+        printf("RTC: %04d.%02d.%02d\n", 2000+date.Year, date.Month, date.Date);
+        printf("Dzien tygodnia: %d\n", date.WeekDay);
         printf("Aktualny czas: %02d:%02d:%02d\n", time.Hours, time.Minutes, time.Seconds);
         HAL_Delay(200);
     /* USER CODE END WHILE */
