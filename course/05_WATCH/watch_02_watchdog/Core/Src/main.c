@@ -95,19 +95,19 @@ int main(void)
     MX_USART2_UART_Init();
     MX_RTC_Init();
     /* USER CODE BEGIN 2 */
-    int i;
-
-    for (i = 0; i < 10; i++)
-    {
-        HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-        HAL_Delay(100);
-    }
+    uint32_t last_ms = HAL_GetTick();
     /* USER CODE END 2 */
 
     /* Infinite loop */
     /* USER CODE BEGIN WHILE */
     while (1)
     {
+        uint32_t now_ms = HAL_GetTick();
+        if((now_ms - last_ms) >= 500)
+        {
+            HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+            last_ms = now_ms;
+        }
         /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
