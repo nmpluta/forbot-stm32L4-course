@@ -111,12 +111,14 @@ int main(void)
             while (is_button_pressed())
             {
             }
-            init_time.Hours = 11;
-            init_time.Minutes = 20;
-            init_time.Seconds = 0;
-            init_date.Year = 22;
-            init_date.Month = 3;
-            init_date.Date = 23;
+
+            //leap year test
+            init_time.Hours = 23;
+            init_time.Minutes = 59;
+            init_time.Seconds = 50;
+            init_date.Year = 20;
+            init_date.Month = 2;
+            init_date.Date = 28;
             init_date.WeekDay = RTC_WEEKDAY_WEDNESDAY;
 
             HAL_RTC_SetTime(&hrtc, &init_time, RTC_FORMAT_BIN);
